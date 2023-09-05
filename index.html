@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('https://cdn.arabsstock.com/uploads/images/92040/image-92040-sun-rays-mountains-highlands-during-sunrise-sunrise-mounta-thumbnail.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .list-unstyled {
+            gap: 10px;
+        }
+
+        .dark-mode {
+            background-image: url('https://5alfiat.com/wp-content/uploads/2023/03/%D8%AE%D9%84%D9%81%D9%8A%D8%A7%D8%AA-%D8%B3%D9%88%D8%AF%D8%A7%D8%A1-%D9%81%D8%AE%D9%85%D9%87-%D8%A8%D9%86%D8%A7%D8%AA3.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            color: black;
+        }
+
+        #countrySelect {
+            font-size: 14px;
+            padding: 8px;
+            height: auto;
+            max-width: 100%;
+            width: 200px;
+            box-sizing: border-box;
+        }
+
+        .weather-app {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .weather-info {
+            display: none;
+        }
+
+        .forecast-card {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        .aq {
+            background-color: darkgray !important;
+            border-radius: 20px !important;
+        }
+
+        .bs {
+            border-radius: 20px !important;
+        }
+
+        .bn {
+            background-color: crimson !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div id="dateTimeContainer"></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#Address">Address <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z" />
+                                <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z" />
+                            </svg></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#About">About <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                height="16" fill="currentColor" class="bi bi-file-earmark-person-fill"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm2 5.755V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-.245S4 12 8 12s5 1.755 5 1.755z" />
+                            </svg></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#SignUp">Sign Up <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                height="16" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15H1.5zM11 2h.5a.5.5 0 0 1 .5.5V15h-1V2zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z" />
+                            </svg></a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="toggleDarkModeButton" class="btn btn-light btn-sm nav-link bn"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-moon-stars-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z" />
+                                <path
+                                    d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-sun-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
+                            </svg></button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <h2 style="text-align: center;color: crimson;">Weather Web</h2>
+    </header>
+
+    <div class="container my-5">
+        <div class="weather-app p-4 bg-white rounded shadow aq">
+            <select id="countrySelect" class="form-select mb-3 bs">
+                <option value="" selected disabled>Select a country</option>
+            </select>
+            <input type="text" id="cityInput" class="form-control mb-3 bs" placeholder="Enter city">
+            <button id="fetchWeatherButton" class="btn btn-primary bs bn">Get the weather <svg
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-umbrella-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M8 0a.5.5 0 0 1 .5.5v.514C12.625 1.238 16 4.22 16 8c0 0 0 .5-.5.5-.149 0-.352-.145-.352-.145l-.004-.004-.025-.023a3.484 3.484 0 0 0-.555-.394A3.166 3.166 0 0 0 13 7.5c-.638 0-1.178.213-1.564.434a3.484 3.484 0 0 0-.555.394l-.025.023-.003.003s-.204.146-.353.146-.352-.145-.352-.145l-.004-.004-.025-.023a3.484 3.484 0 0 0-.555-.394 3.3 3.3 0 0 0-1.064-.39V13.5H8h.5v.039l-.005.083a2.958 2.958 0 0 1-.298 1.102 2.257 2.257 0 0 1-.763.88C7.06 15.851 6.587 16 6 16s-1.061-.148-1.434-.396a2.255 2.255 0 0 1-.763-.88 2.958 2.958 0 0 1-.302-1.185v-.025l-.001-.009v-.003s0-.002.5-.002h-.5V13a.5.5 0 0 1 1 0v.506l.003.044a1.958 1.958 0 0 0 .195.726c.095.191.23.367.423.495.19.127.466.229.879.229s.689-.102.879-.229c.193-.128.328-.304.424-.495a1.958 1.958 0 0 0 .197-.77V7.544a3.3 3.3 0 0 0-1.064.39 3.482 3.482 0 0 0-.58.417l-.004.004S5.65 8.5 5.5 8.5c-.149 0-.352-.145-.352-.145l-.004-.004a3.482 3.482 0 0 0-.58-.417A3.166 3.166 0 0 0 3 7.5c-.638 0-1.177.213-1.564.434a3.482 3.482 0 0 0-.58.417l-.004.004S.65 8.5.5 8.5C0 8.5 0 8 0 8c0-3.78 3.375-6.762 7.5-6.986V.5A.5.5 0 0 1 8 0z" />
+                </svg></button>
+            <div class="weather-info mt-4">
+                <h2 class="mb-3">Weather information Today</h2>
+                <p>Temperature: <span id="temperature"></span></p>
+                <p>Weather: <span id="weatherDescription"></span></p>
+                <p>Icon: <img id="weatherIcon" src="" alt="Weather Icon"></p>
+                <h2 class="mb-3">Forecasts for the next 3 days</h2>
+                <div id="forecastContainer" class="row row-cols-1 row-cols-md-3 g-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <section class="container my-5">
+        <div class="bg-white rounded p-4 aq">
+            <h2 id="SignUp">Register a new account</h2>
+            <form id="registrationForm">
+                <div class="mb-3">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control bs" id="fullName" name="fullName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control bs" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control bs" id="password" name="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control bs" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary bs bn">Account Registration <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                    </svg></button>
+            </form>
+        </div>
+    </section>
+
+    <section class="container my-5">
+        <div class="bg-white rounded p-4 aq">
+            <h2 id="About">About Us</h2>
+            <p>We are at your service to provide the best services and information about weather conditions.</p>
+            <p>We always strive to provide accurate and reliable weather forecasts to help you plan your daily
+                activities.</p>
+        </div>
+    </section>
+
+    <section class="container my-5">
+        <div class="bg-white rounded p-4 aq">
+            <h2 id="Address">Address</h2>
+            <p>If you have any questions or inquiries, please feel free to contact us using the information below:</p>
+            <ul class="list-unstyled">
+                <li><strong>Email:</strong> abdullazizkamal2004@gmail.com</li>
+                <li><strong>Phone:</strong> +201201060535</li>
+                <li><strong>Address:</strong> Quzman_Qallin_Kafr-Elsheikh</li>
+            </ul>
+        </div>
+    </section>
+    <hr>
+    <footer class="bg-dark text-white py-3" style="background-color: aliceblue !important; color: black !important;">
+        <p class="text-center m-0">&copy; 2023 Weather App. All rights reserved.</p>
+        <a class="nav-link" href="https://www.facebook.com/abdullaziz.kamal.2004?mibextid=ZbWKwL"
+            style="text-align: center;">Contact Us <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
+                <path
+                    d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
+            </svg></a>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const dateTimeContainer = document.getElementById('dateTimeContainer');
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            const dateTimeString = now.toLocaleDateString(undefined, options);
+            dateTimeContainer.textContent = dateTimeString;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const apiKey = '55b96d93d0bc9733ff5374203f2f0591';
+            const fetchWeatherButton = document.getElementById('fetchWeatherButton');
+            const cityInput = document.getElementById('cityInput');
+            const countrySelect = document.getElementById('countrySelect');
+            const temperatureElement = document.getElementById('temperature');
+            const weatherDescriptionElement = document.getElementById('weatherDescription');
+            const weatherIconElement = document.getElementById('weatherIcon');
+            const forecastContainer = document.getElementById('forecastContainer');
+            const registrationForm = document.getElementById('registrationForm');
+
+            registrationForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fullName = document.getElementById('fullName').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+
+                try {
+
+                    alert('Registration successful!');
+                }
+                catch (error) {
+                    console.error('Error registering user:', error);
+                    alert('Registration failed. Please try again later.');
+                }
+            });
+
+            try {
+                const response = await fetch('https://restcountries.com/v2/all');
+                const countriesData = await response.json();
+
+                countriesData.forEach(countryData => {
+                    const countryName = countryData.name;
+                    const option = document.createElement('option');
+                    option.value = countryName;
+                    option.textContent = countryName;
+                    countrySelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching country data:', error);
+            }
+
+            fetchWeatherButton.addEventListener('click', async () => {
+                const city = cityInput.value;
+                const country = countrySelect.value;
+                if (!city || !country) {
+                    alert('Please enter a city and select a country.');
+                    return;
+                }
+
+                try {
+                    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}&units=metric`;
+                    const forecastApiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city},${country}&appid=${apiKey}&units=metric`;
+                    const response = await fetch(apiUrl);
+                    const forecastResponse = await fetch(forecastApiUrl);
+                    const data = await response.json();
+                    const forecastData = await forecastResponse.json();
+
+                    temperatureElement.textContent = `${data.main.temp}°C`;
+                    weatherDescriptionElement.textContent = data.weather[0].description;
+                    weatherIconElement.src = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`;
+
+                    const currentDate = new Date();
+
+                    forecastContainer.innerHTML = '';
+                    for (let i = 1; i <= 3; i++) {
+                        const forecastItem = forecastData.list[i];
+                        const forecastDate = new Date(currentDate.getTime() + i * 24 * 60 * 60 * 1000);
+                        const formattedDate = forecastDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+                        const forecastTemperature = forecastItem.main.temp;
+                        const forecastWeatherDescription = forecastItem.weather[0].description;
+
+                        const forecastCard = document.createElement('div');
+                        forecastCard.className = 'forecast-card';
+                        forecastCard.innerHTML = `
+                            <p>Date: ${formattedDate}</p>
+                            <p>Temperature: ${forecastTemperature}°C</p>
+                            <p>Weather: ${forecastWeatherDescription}</p>
+                        `;
+                        forecastContainer.appendChild(forecastCard);
+                    }
+
+                    const weatherInfo = document.querySelector('.weather-info');
+                    weatherInfo.style.display = 'block';
+                } catch (error) {
+                    console.error('Error fetching weather data:', error);
+                }
+            });
+
+            cityInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    fetchWeatherButton.click();
+                }
+            });
+
+            const toggleDarkModeButton = document.getElementById('toggleDarkModeButton');
+            const body = document.body;
+
+            toggleDarkModeButton.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+            });
+        });
+    </script>
+</body>
+
+</html>
